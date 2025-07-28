@@ -42,5 +42,23 @@ int main(int argc, char* argv[])
 
 	std::cout << std::format("Crossproduct: {}\n", glm::to_string(result3));
 
+	glm::vec3 T({ 3.0f, -2.0f, 0.0f });
+	glm::vec3 R({ 0.0f, 7.0f, 0.0f });
+
+	std::cout << std::format("A vector length: {}\n", glm::length(T));
+	std::cout << std::format("B vector length: {}\n", glm::length(R));
+	// sqrt(A.x*A.x + A.y*A.y)
+	
+	auto dotproduct = glm::dot(glm::normalize(T), glm::normalize(R));
+	std::cout << std::format("Dot product: {}\n", dotproduct);
+	// dot product is used to show how much 2 vectors are close. is 0 - this is orthoginal 
+	std::cout << std::format("Angle: {}\n", std::acos(dotproduct) * 180.0f / glm::pi<float>());
+	// is showing an angle between them. useful for bullets system
+
+	auto crossProduct = glm::cross(T, R);
+	std::cout << std::format("CrossProduct: {}\n", glm::to_string(crossProduct));
+	//cross product is giving you a perpendicular vector to 2 other vectors
+
+
 	return 0;
 }
