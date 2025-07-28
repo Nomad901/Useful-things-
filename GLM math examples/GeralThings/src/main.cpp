@@ -4,149 +4,43 @@
 #include <iostream>
 #include <format>
 
-#include <SDL3/SDL.h>
-#include <imgui.h>
-#include <imgui_impl_sdl3.h>
-#include <imgui_impl_sdlrenderer3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 
 int main(int argc, char* argv[])
 {
-	// this is in a local space now
-	glm::vec4 vertex(1.0f, 5.0f, 1.0f, 1.0f);
+	glm::vec3 A({ 1.0f, 3.0f, 4.0f });
+	glm::vec3 B({ 4.0f, 0.5f, 6.0f });
 
-	// local -> world
-	glm::mat4 model(1.0f);
-	model = glm::translate(model, { 50.0f,50.0f,0.0f });
-	// world -> local
-	glm::mat4 inverseModel = glm::inverse(model);
+	std::cout << std::format("A.x: {}  A.y: {}  A.z: {}\n", A.x, A.y, A.z);
+	std::cout << std::format("B.x: {}  B.y: {}  B.z: {}\n", B.x, B.y, B.z);
 
-	// in order to translate the vector above in the world space 
-	// we merely should multiply this on the model matrix;
-	glm::vec4 vertexWorld = model * vertex;
+	auto result = glm::dot(A, B); 
+	// result = (A.x * B.x) + (A.y * B.y) + (A.z * B.z)
+	std::cout << std::format("The result: {}\n", result);
 
-	std::cout << std::format("The vertex: {}\n", glm::to_string(vertexWorld));
+	auto result2 = glm::normalize(A);
+	// result2 = A / sqrt(A.x*A.x + A.y*A.y + A.z*A.z)
+	std::cout << std::format("A.x: {}  A.y: {}  A.z: {}\n", result2.x, result2.y, result2.z);
 
-	SDL_Window* window = SDL_CreateWindow("MathExample", 1280, 720, SDL_WINDOW_RESIZABLE);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
+	glm::mat4 mat(1.0f);
+	std::cout << std::format("\nThe matrix: {}\n\n", glm::to_string(mat));
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
+	// in order to print vectors onto the console 
+	std::cout << std::format("Vector A: {}\n", glm::to_string(A));
+	std::cout << glm::to_string(A.xyz()) << '\n' << glm::to_string(A.zx()) << '\n';
 
-	io.ConfigFlags |= ImGuiBackendFlags_None;
-	io.IniSavingRate = NULL;
+	// crossproduct
+	auto result3 = glm::cross(A, B);
+	// (y1*z2) - (z1*y2)
+	// (z1*x2) - (x1*z2)
+	// (x1*y2) - (y1*x2)
 
-	ImGui::StyleColorsDark();
+	// (3*6) - (4*0.5)
+	// (4*4) - (1*6)
+	// (1*0.5) - (3*4)
 
-	ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
-	ImGui_ImplSDLRenderer3_Init(renderer);
-
-	SDL_FRect tmpRect = { vertex.x, vertex.y, 100,100 };
-	bool active = true;
-	bool firstTime = true;
-	bool showLogPos = false;
-
-	int32_t colorWindow[3] = { 1,1,1 };
-	int32_t colorQuad[3] = { 23,42,35 };
-
-	while (active)
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			ImGui_ImplSDL3_ProcessEvent(&event);
-
-			if (event.type == SDL_EVENT_QUIT)
-			{
-				active = false;
-				break;
-			}
-
-			if (event.key.key == SDLK_D)
-			{
-				vertex.x += 5; 
-				tmpRect.x = vertex.x;
-			}
-			else if (event.key.key == SDLK_A)
-			{
-				vertex.x -= 5;
-				tmpRect.x = vertex.x;
-			}
-			else if (event.key.key == SDLK_W)
-			{
-				vertex.y -= 5;
-				tmpRect.y = vertex.y;
-			}
-			else if (event.key.key == SDLK_S)
-			{
-				vertex.y += 5;
-				tmpRect.y = vertex.y;
-			}
-		}
-		SDL_SetRenderDrawColor(renderer, colorWindow[0], colorWindow[1], colorWindow[2], 255);
-		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer, colorQuad[0], colorQuad[1], colorQuad[2], 255);
-		SDL_RenderRect(renderer, &tmpRect);
-
-		ImGui_ImplSDL3_NewFrame();
-		ImGui_ImplSDLRenderer3_NewFrame();
-		ImGui::NewFrame();
-
-		if (firstTime)
-		{
-			ImGui::SetNextWindowPos({ 100,100 });
-			ImGui::SetNextWindowSize({ 400, 300 });
-			firstTime = false;
-		}
-		
-		ImGui::Begin("I am math!", &active, ImGuiBackendFlags_None);
-		
-		if (ImGui::Button("WorldSpace"))
-		{
-			vertex = model * vertex;
-			std::cout << std::format("WorldSpace pos: {}\n", glm::to_string(vertex));
-		}
-		else if (ImGui::Button("LocalSpace"))
-		{
-			vertex = inverseModel * vertex;
-			std::cout << std::format("LocalSpace pos: {}\n", glm::to_string(vertex));
-		}
-		
-		ImGui::Checkbox("Show position in the console", &showLogPos);
-		if(showLogPos)
-			std::cout << std::format("Position of the quad: {}\n", glm::to_string(vertex));
-
-		ImGui::Spacing();
-		ImGui::Separator();
-
-		ImGui::SliderInt("Color background R", &colorWindow[0], 1, 255);
-		ImGui::SliderInt("Color background G", &colorWindow[1], 1, 255);
-		ImGui::SliderInt("Color background B", &colorWindow[2], 1, 255);
-
-		ImGui::Spacing();
-		ImGui::Spacing();
-
-		ImGui::SliderInt("Color Quad R", &colorQuad[0], 1, 255);
-		ImGui::SliderInt("Color Quad G", &colorQuad[1], 1, 255);
-		ImGui::SliderInt("Color Quad B", &colorQuad[2], 1, 255);
-
-		ImGui::End();
-		ImGui::EndFrame();
-
-		ImGui::Render();
-		ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
-		SDL_RenderPresent(renderer);
-	}
-
-
-	ImGui_ImplSDL3_Shutdown();
-	ImGui_ImplSDLRenderer3_Shutdown();
-	ImGui::DestroyContext();
-
-	SDL_DestroyRenderer(renderer);
-	SDL_Quit();
+	std::cout << std::format("Crossproduct: {}\n", glm::to_string(result3));
 
 	return 0;
-} 
+}
