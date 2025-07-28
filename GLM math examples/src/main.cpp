@@ -30,7 +30,8 @@ int main(int argc, char* argv[])
 	std::cout << std::format("Vector A: {}\n", glm::to_string(A));
 	std::cout << glm::to_string(A.xyz()) << '\n' << glm::to_string(A.zx()) << '\n';
 
-	// crossproduct
+	// crossproduct - is helping to find a perpendicular vector of 2 other vectors. 
+	// if we change A on B and B on A, results will be sheerly different
 	auto result3 = glm::cross(A, B);
 	// (y1*z2) - (z1*y2)
 	// (z1*x2) - (x1*z2)
@@ -39,7 +40,7 @@ int main(int argc, char* argv[])
 	// (3*6) - (4*0.5)
 	// (4*4) - (1*6)
 	// (1*0.5) - (3*4)
-
+	
 	std::cout << std::format("Crossproduct: {}\n", glm::to_string(result3));
 
 	glm::vec3 T({ 3.0f, -2.0f, 0.0f });
