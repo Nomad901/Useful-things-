@@ -50,10 +50,19 @@ add_subdirectory(thirdparty/glm EXCLUDE_FROM_ALL)
 # DON'T ADD THE SOURCES BY HAND, they are already added with this macro
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-file(GLOB_RECURSE IMGUI_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/*.cpp")
-file(GLOB_RECURSE IMGUI_SOURCE_BACKEND_FILES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/backends/*.cpp")
-file(GLOB_RECURSE IMGUI_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/*.h")
-file(GLOB_RECURSE IMGUI_HEADER_BACKEND_FILES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/backends/*.h")
+# this version doesnt work, cuz it includes ALL headers and sources
+# and some of them are demanding an exact platform; for istance:
+# if i do this like that, it will be complaining on divergence with android platform 
+# sorry, but u need to append all files manually. 
+#file(GLOB_RECURSE IMGUI_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/*.cpp")
+#file(GLOB_RECURSE IMGUI_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/*.h")
+
+file(GLOB_RECURSE IMGUI_SOURCE_FILES imgui_impl_opengl3.cpp 
+									 imgui_impl_SDL3.cpp imgui.cpp imgui_draw.cpp 
+									 imgui_tables.cpp imgui_widgets.cpp imgui_demo.cpp imgui_impl_sdlrenderer3.cpp)
+file(GLOB_RECURSE IMGUI_HEADER_FILES imgui_impl_opengl3.h
+									 imgui_impl_SDL3.h imgui.h imconfig.h imgui_internal.h 
+									 imstb_rectpack.h imstb_textedit.h imstb_truetype.h imgui_impl_sdlrenderer3.h)
 
 add_executable("${CMAKE_PROJECT_NAME}")
 
@@ -97,7 +106,7 @@ if (WIN32)
 endif()
 
 message(STATUS "${PROJECT_NAME}: Creating imgui lib")
-add_library(imgui ${BUILD_LIB_FLAG} ${IMGUI_SOURCE_FILES} ${IMGUI_SOURCE_BACKEND_FILES} ${IMGUI_HEADER_FILES} ${IMGUI_HEADER_BACKEND_FILES})
+add_library(imgui ${BUILD_LIB_FLAG} ${IMGUI_SOURCE_FILES} ${IMGUI_HEADER_FILES})
 
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 target_include_directories(imgui PUBLIC ${IMGUI_INCLUDE_DIR})
