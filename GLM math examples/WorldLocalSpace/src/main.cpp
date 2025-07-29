@@ -18,15 +18,9 @@ int main(int argc, char* argv[])
 
 	// local -> world
 	glm::mat4 model(1.0f);
-	model = glm::translate(model, { 50.0f,50.0f,0.0f });
+	model = glm::translate(model, { 10.0f,10.0f,0.0f });
 	// world -> local
 	glm::mat4 inverseModel = glm::inverse(model);
-
-	// in order to translate the vector above in the world space 
-	// we merely should multiply this on the model matrix;
-	glm::vec4 vertexWorld = model * vertex;
-
-	std::cout << std::format("The vertex: {}\n", glm::to_string(vertexWorld));
 
 	SDL_Window* window = SDL_CreateWindow("MathExample", 1280, 720, SDL_WINDOW_RESIZABLE);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
@@ -66,23 +60,27 @@ int main(int argc, char* argv[])
 
 			if (event.key.key == SDLK_D)
 			{
-				vertex.x += 5; 
+				vertex.x += 5;
 				tmpRect.x = vertex.x;
+				model[3].x = vertex.x;
 			}
 			else if (event.key.key == SDLK_A)
 			{
 				vertex.x -= 5;
 				tmpRect.x = vertex.x;
+				model[3].x = vertex.x;
 			}
 			else if (event.key.key == SDLK_W)
 			{
 				vertex.y -= 5;
 				tmpRect.y = vertex.y;
+				model[3].y = vertex.y;
 			}
 			else if (event.key.key == SDLK_S)
 			{
 				vertex.y += 5;
 				tmpRect.y = vertex.y;
+				model[3].y = vertex.y;
 			}
 		}
 		SDL_SetRenderDrawColor(renderer, colorWindow[0], colorWindow[1], colorWindow[2], 255);
@@ -100,22 +98,64 @@ int main(int argc, char* argv[])
 			ImGui::SetNextWindowSize({ 400, 300 });
 			firstTime = false;
 		}
-		
+
 		ImGui::Begin("I am math!", &active, ImGuiBackendFlags_None);
-		
+
 		if (ImGui::Button("WorldSpace"))
 		{
 			vertex = model * vertex;
+			tmpRect.x = vertex.x;
+			tmpRect.y = vertex.y;
 			std::cout << std::format("WorldSpace pos: {}\n", glm::to_string(vertex));
 		}
 		else if (ImGui::Button("LocalSpace"))
 		{
 			vertex = inverseModel * vertex;
+			tmpRect.x = vertex.x;
+			tmpRect.y = vertex.y;
 			std::cout << std::format("LocalSpace pos: {}\n", glm::to_string(vertex));
 		}
 		
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		if (ImGui::Button("Rotate The Quad"))
+		{
+			model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			vertex = model * glm::vec4(1.0f, 5.0f, 1.0f, 1.0f);
+			tmpRect.x = vertex.x;
+			tmpRect.y = vertex.y;
+		}
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		if (ImGui::Button("Translate"))
+		{
+			// actually just moves an object
+			model = glm::translate(model, glm::vec3(1.0f,0.0f,0.0f));
+			vertex = model * glm::vec4(1.0f, 5.0f, 1.0f, 1.0f);
+			tmpRect.x = vertex.x;
+			tmpRect.y = vertex.y;
+		}
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		if (ImGui::Button("Scale"))
+		{
+			// resizing an object 
+			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 1.0f));
+			vertex = model * glm::vec4(1.0f, 5.0f, 1.0f, 1.0f);
+			tmpRect.x = vertex.x;
+			tmpRect.y = vertex.y;
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+
 		ImGui::Checkbox("Show position in the console", &showLogPos);
-		if(showLogPos)
+		if (showLogPos)
 			std::cout << std::format("Position of the quad: {}\n", glm::to_string(vertex));
 
 		ImGui::Spacing();
@@ -140,7 +180,6 @@ int main(int argc, char* argv[])
 		SDL_RenderPresent(renderer);
 	}
 
-
 	ImGui_ImplSDL3_Shutdown();
 	ImGui_ImplSDLRenderer3_Shutdown();
 	ImGui::DestroyContext();
@@ -149,4 +188,4 @@ int main(int argc, char* argv[])
 	SDL_Quit();
 
 	return 0;
-} 
+}
