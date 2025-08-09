@@ -189,3 +189,28 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
+//glm::vec2 localVector = { mMousePos.x, mMousePos.y };
+            ////glm::mat2x2 model(0.0f);
+            ////model[0][0] = 1.0f + mCircle.getPos().x;
+            ////model[1][1] = 1.0f + mCircle.getPos().y;
+            ////localVector = localVector * model;
+            ////localVector = glm::normalize(localVector);
+
+            ////localVector *= mCircle.getBigRadius();
+            ////glm::mat2x2 reverseModel(0.0f);
+            ////reverseModel = glm::inverse(model);
+            ////glm::vec2 globalVector = localVector * reverseModel;
+            ////mFactoryRays.update(mCircle.getPos(), { globalVector.x, globalVector.y }, true);
+
+            //// Get vector from circle center to mouse pos
+            //glm::vec2 localVector = { mMousePos.x - mCircle.getPos().x, mMousePos.y - mCircle.getPos().y };
+
+            //// Normalize and scale to the circle radius
+            //localVector = glm::normalize(localVector) * float(mCircle.getBigRadius());
+
+            //// Convert back to global position on the circle's edge
+            //const glm::vec2 globalVector = { localVector.x + mCircle.getPos().x, localVector.y + mCircle.getPos().y };
+
+            //mFactoryRays.update(mCircle.getPos(), { globalVector.x, globalVector.y }, true);
+
