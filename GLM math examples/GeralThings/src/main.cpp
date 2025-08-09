@@ -42,5 +42,29 @@ int main(int argc, char* argv[])
 
 	std::cout << std::format("Crossproduct: {}\n", glm::to_string(result3));
 
+            // we are finding the distance between the mouse pos and the circle pos
+            // glm::vec2 localVector = { mMousePos.x - mCircle.getPos().x, mMousePos.y - mCircle.getPos().y };
+            // after that we normalize that distance and multiplying this by a radius of the circle
+            // which therefore will give us "scale" factor
+            //localVector = glm::normalize(localVector) * float(mCircle.getBigRadius());
+            // we are using the "scale" factor and getting the proper position.
+           // const glm::vec2 globalVector = { localVector.x + mCircle.getPos().x, localVector.y + mCircle.getPos().y };
+
+           // mFactoryRays.update(mCircle.getPos(), { globalVector.x, globalVector.y }, true);
+//bool Setup::pointInCircle()
+//{
+    // we find the distance between the mouse and the circle again
+    // but we also need to multiply it by itself (cuz of the equation structure)
+//    const float xPart = (mMousePos.x - mCircle.getPos().x);
+//    const float yPart = (mMousePos.y - mCircle.getPos().y);
+//    const float distanceFromPointToCircle = (xPart * xPart) + (yPart * yPart);
+//    const float squaredRadius = (mCircle.getBigRadius() * mCircle.getBigRadius());
+
+    // a^2 * b^2 < r^2
+//    return distanceFromPointToCircle < squaredRadius;
+//}
+
 	return 0;
 }
+
+
