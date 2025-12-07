@@ -13,8 +13,9 @@ public:
 		MINUTES = 3
 	};
 public:
-	benchmark(typeOfTime pTypeOfTime = typeOfTime::MICROSECONDS)
+	benchmark(std::string_view pNameOfExample = "", typeOfTime pTypeOfTime = typeOfTime::MICROSECONDS)
 	{
+		mNameOfExample = pNameOfExample;
 		mTimePoint1 = std::chrono::steady_clock::now();
 		mTypeOfTime = pTypeOfTime;
 	}
@@ -42,31 +43,71 @@ public:
 	~benchmark()
 	{
 		mTimePoint2 = std::chrono::steady_clock::now();
-		std::cout << "---------------------------\n\n";
+		std::cout << "\n---------------------------\n\n";
 		switch (mTypeOfTime)
 		{
 		case benchmark::typeOfTime::MICROSECONDS:
-			std::cout << std::format("Time: {} microseconds, Example number: {}.\n", 
-									  std::chrono::duration_cast<std::chrono::microseconds>(mTimePoint2 - mTimePoint1).count(),
-									  mCounterOfExamples);
+			if (!mNameOfExample.empty())
+			{
+				std::cout << std::format("Time: {} microseconds, Example number: {}, Name: {}.\n",
+										  std::chrono::duration_cast<std::chrono::microseconds>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples,
+										  mNameOfExample);
+			}
+			else
+			{
+				std::cout << std::format("Time: {} microseconds, Example number: {}.\n", 
+										  std::chrono::duration_cast<std::chrono::microseconds>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples);
+			}
 			break;
 		case benchmark::typeOfTime::MILLISECONDS:
-			std::cout << std::format("Time: {} milliseconds, Example number: {}.\n", 
-									  std::chrono::duration_cast<std::chrono::milliseconds>(mTimePoint2 - mTimePoint1).count(),
-									  mCounterOfExamples);
+			if (!mNameOfExample.empty())
+			{
+				std::cout << std::format("Time: {} milliseconds, Example number: {}, Name: {}.\n",
+										  std::chrono::duration_cast<std::chrono::milliseconds>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples, 
+										  mNameOfExample);
+			}
+			else
+			{
+				std::cout << std::format("Time: {} milliseconds, Example number: {}.\n",
+										  std::chrono::duration_cast<std::chrono::milliseconds>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples);
+			}
 			break;
 		case benchmark::typeOfTime::SECONDS:
-			std::cout << std::format("Time: {} seconds, Example number: {}.\n", 
-									  std::chrono::duration_cast<std::chrono::seconds>(mTimePoint2 - mTimePoint1).count(),
-									  mCounterOfExamples);
+			if (!mNameOfExample.empty())
+			{
+				std::cout << std::format("Time: {} seconds, Example number: {}, Name: {}.\n",
+										  std::chrono::duration_cast<std::chrono::seconds>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples,
+										  mNameOfExample);
+			}
+			else
+			{
+				std::cout << std::format("Time: {} seconds, Example number: {}.\n",
+										  std::chrono::duration_cast<std::chrono::seconds>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples);
+			}
 			break;
 		case benchmark::typeOfTime::MINUTES:
-			std::cout << std::format("Time: {} minutes, Example number: {}.\n", 
-									  std::chrono::duration_cast<std::chrono::minutes>(mTimePoint2 - mTimePoint1).count(),
-									  mCounterOfExamples);
+			if (!mNameOfExample.empty())
+			{
+				std::cout << std::format("Time: {} minutes, Example number: {}, Name: {}.\n",
+										  std::chrono::duration_cast<std::chrono::minutes>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples, 
+										  mNameOfExample);
+			}
+			else
+			{
+				std::cout << std::format("Time: {} minutes, Example number: {}.\n",
+										  std::chrono::duration_cast<std::chrono::minutes>(mTimePoint2 - mTimePoint1).count(),
+										  mCounterOfExamples);
+			}
 			break;
 		}
-		std::cout << "\n---------------------------";
+		std::cout << "\n---------------------------\n\n";
 		mCounterOfExamples++;
 	}
 
@@ -74,6 +115,7 @@ public:
 	std::chrono::steady_clock::time_point mTimePoint1;
 	std::chrono::steady_clock::time_point mTimePoint2;
 	typeOfTime mTypeOfTime;
+	std::string mNameOfExample;
 
 	static inline uint32_t mCounterOfExamples = 0;
 };
@@ -99,5 +141,6 @@ int main()
 	}
 	std::cout<<std::format("Time of the counter: {}\n", b.getResult());
 }
+
 
 
